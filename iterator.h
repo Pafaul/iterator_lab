@@ -1,91 +1,66 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "collection.h"
+#include "sortingalgorythm.h"
 
-class AbstractVehicleIterator
-{    
+
+class VehicleIterator
+{
+protected:
+    std::string tag;
+    std::string property;
+    std::vector<int> filteredItems;
+    std::vector<int> filterItems(Collection * c, std::string tag, std::string property);
+
 public:
-    AbstractVehicleIterator() {};
-    AbstractVehicleIterator(Collection * c) {};
-    virtual AbstractVehicle * getNext() = 0;
+    VehicleIterator();
+    VehicleIterator(Collection * c, std::string tag, std::string property) {};
+    virtual TemplateVehicle* getNext() = 0;
     virtual bool hasMore() = 0;
 };
 
-class OneDirectionalIterator : public AbstractVehicleIterator
+class CircleVehicleIterator :  public VehicleIterator
 {
 protected:
     Collection * collection;
     int currentItem = -1;
-public:
-    OneDirectionalIterator() : AbstractVehicleIterator() {};
-    OneDirectionalIterator(Collection * c) : AbstractVehicleIterator(c) {
-        this->collection = c;
-    }
-    AbstractVehicle * getNext() override {
-        currentItem += 1;
-        if (this->hasMore()) {
-            return collection->getItem(currentItem);
-        } else {
-            return collection->getItem(collection->getLength()-1);
-        }
-    };
 
-    bool hasMore() override{
-        return currentItem < collection->getLength();
-    }
+public:
+    CircleVehicleIterator(): VehicleIterator() {};
+    CircleVehicleIterator(Collection * c, std::string tag, std::string property);
+    TemplateVehicle * getNext() override;
+    bool hasMore() override;
 };
 
-class CircleVehicleIterator :  public AbstractVehicleIterator
+class SortIterator : public VehicleIterator
 {
 protected:
-    Collection * collection;
-    int currentItem = -1;
+    virtual void getSorted() = 0;
+    SortingAlgorythm * sortingAlgorithm;
+    bool reversed;
 public:
-    CircleVehicleIterator() : AbstractVehicleIterator() {};
-    CircleVehicleIterator(Collection * c) : AbstractVehicleIterator(c) {
-        this->collection = c;
-    }
-    AbstractVehicle * getNext() override {
-        currentItem += 1;
-        if (this->hasMore()) {
-            return collection->getItem(currentItem);
-        } else {
-            currentItem = 0;
-            return collection->getItem(currentItem);
-        }
-    };
-
-    bool hasMore() override{
-        return currentItem < collection->getLength();
-    }
+    SortIterator() : VehicleIterator() {};
+    SortIterator(Collection * c, std::string tag, std::string property) : VehicleIterator(c, tag, property) {};
+    virtual TemplateVehicle * getNext() override = 0;
+    virtual bool hasMore() override = 0;
+    void setSortingAlgorithm(SortingAlgorythm * sortAlgorythm) { this->sortingAlgorithm = sortAlgorythm; };
+    void reverse() {this->reversed = this->reversed ? false : true; };
 };
 
-class ReverseVehicleIterator : public AbstractVehicleIterator
+
+class CircleSortIterator : public SortIterator
 {
 protected:
+    virtual void getSorted() override;
     Collection * collection;
-    int currentItem;
+    unsigned long currentItem = -1;
+    unsigned long collectionSize;
+    std::vector<int> preSorted;
 public:
-    ReverseVehicleIterator() : AbstractVehicleIterator() {};
-    ReverseVehicleIterator(Collection * c) : AbstractVehicleIterator(c) {
-        this->collection = c;
-        currentItem = collection->getLength();
-    }
-    AbstractVehicle * getNext() override {
-        currentItem -= 1;
-        if (this->hasMore()) {
-            return collection->getItem(currentItem);
-        } else {
-            return collection->getItem(0);
-        }
-    };
-
-    bool hasMore() override{
-        return currentItem > 0;
-    }
+    CircleSortIterator(): SortIterator() {};
+    CircleSortIterator(Collection *c, std::string tag, std::string property);
+    TemplateVehicle * getNext() override;
+    bool hasMore() override;
 };
-
-
 
 #endif // ITERATOR_H
