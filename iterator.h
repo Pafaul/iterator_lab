@@ -61,6 +61,31 @@ public:
     }
 };
 
+class ReverseVehicleIterator : public AbstractVehicleIterator
+{
+protected:
+    Collection * collection;
+    int currentItem;
+public:
+    ReverseVehicleIterator() : AbstractVehicleIterator() {};
+    ReverseVehicleIterator(Collection * c) : AbstractVehicleIterator(c) {
+        this->collection = c;
+        currentItem = collection->getLength();
+    }
+    AbstractVehicle * getNext() override {
+        currentItem -= 1;
+        if (this->hasMore()) {
+            return collection->getItem(currentItem);
+        } else {
+            return collection->getItem(0);
+        }
+    };
+
+    bool hasMore() override{
+        return currentItem > 0;
+    }
+};
+
 
 
 #endif // ITERATOR_H
