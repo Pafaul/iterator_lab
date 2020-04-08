@@ -33,5 +33,12 @@ public:
     void move() override;
 };
 
+class Helicopter : public AbstractVehicle {
+public:
+    Helicopter() : AbstractVehicle() { this->x = 0; this->y = 0; };
+    Helicopter(double x, double y) : AbstractVehicle(x, y) {};
+    void move() override;
+};
+
 
 #endif // OBJECTS_H
