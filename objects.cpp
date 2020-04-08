@@ -9,7 +9,7 @@ void Missile::move() {
 }
 
 void Quadrocopter::move() {
-    std::cout << "Quadrocopter machine Broken. Have a nice day" << std::endl;
+    std::cout << "Quadrocopter is broken" << std::endl;
 }
 
 void Helicopter::move() {
