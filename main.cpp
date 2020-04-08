@@ -16,6 +16,8 @@ int main()
     Misc m = Misc();
     AbstractVehicle * av;
 
+    std::cout << "New main" << std::endl;
+
     while (inputString != finishPhrase) {
         c = new AircraftCollection();
 
