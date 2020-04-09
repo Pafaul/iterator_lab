@@ -23,7 +23,10 @@ void MainWindow::setupElements()
     this->setCBElements("iteratorTagCB", this->vehicleGenerator.getAllTags());
     this->setCBElements("iteratorPropertyCB", this->vehicleGenerator.getAllProperties());
     cb = ui->centralwidget->findChild<QComboBox*>("iteratorChoiceCB");
-    list.push_back("Circle Iterator"); list.push_back("Circle Sorted Iterator");
+    list.push_back("Circle Iterator");
+    list.push_back("Circle Sorted Iterator");
+    list.push_back("One Direction Iterator");
+    list.push_back("One Direction Sorted Iterator");
     cb->clear();
     cb->addItems(list);
     list.clear();
@@ -123,7 +126,7 @@ void MainWindow::on_vehicleChoiceCB_activated(const QString &arg1)
 
 void MainWindow::on_iteratorChoiceCB_activated(int index)
 {
-    if (index == 1) {
+    if (index == 1 || index == 3) {
         QComboBox * cb = ui->centralwidget->findChild<QComboBox*>("iteratorSortMethodCB");
         cb->setDisabled(false);
     }
@@ -181,18 +184,46 @@ void MainWindow::on_createIteratorButton_clicked()
         this->iterName = cb->currentText();
         break;
     }
+    case 2: {
+        this->vehicleIterator = new OneDirectionIterator(this->collection, qsTag.toStdString(), qsProperty.toStdString());
+        this->iterName = cb->currentText();
+        break;
+    }
+    case 3: {
+        this->sortIterator = new OneDirectionSortIterator(this->collection, qsTag.toStdString(), qsProperty.toStdString());
+        QComboBox * sort = ui->centralwidget->findChild<QComboBox*>("iteratorSortMethodCB");
+        switch (sort->currentIndex()) {
+        case 0: {
+            this->sortIterator->setSortingAlgorithm(new BubbleSort());
+            break;
+        }
+        case 1: {
+            this->sortIterator->setSortingAlgorithm(new InsertionSort());
+            break;
+        }
+        case 2: {
+            this->sortIterator->setSortingAlgorithm(new SelectionSort());
+            break;
+        }
+        }
+        this->vehicleIterator = this->sortIterator;
+        this->iterName = cb->currentText();
+        break;
+    }
     }
 
 }
 
 void MainWindow::on_NEXTBUTTON_clicked()
 {
-    TemplateVehicle * tv = this->vehicleIterator->getNext();
-    std::vector<QString> desc = this->createVehicleDesc(*tv);
     QTextEdit * te = ui->centralwidget->findChild<QTextEdit*>("currentElementEdit");
     te->clear();
-    te->append(desc[0]);
-    te->append(desc[1]);
+    if (this->vehicleIterator->hasMore()) {
+        TemplateVehicle * tv = this->vehicleIterator->getNext();
+        std::vector<QString> desc = this->createVehicleDesc(*tv);
+        te->append(desc[0]);
+        te->append(desc[1]);
+    }
     QString iteratorInfo;
     iteratorInfo.push_back("Iterator: ");
     iteratorInfo.push_back(this->iterName);

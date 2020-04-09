@@ -35,6 +35,19 @@ public:
 };
 
 
+class OneDirectionIterator : public VehicleIterator
+{
+protected:
+    Collection * collection;
+    int currentItem = -1;
+public:
+    OneDirectionIterator(): VehicleIterator() {};
+    OneDirectionIterator(Collection * c, std::string tag, std::string property);
+    TemplateVehicle * getNext() override;
+    bool hasMore() override;
+};
+
+
 class SortIterator : public VehicleIterator
 {
 protected:
@@ -62,6 +75,20 @@ protected:
 public:
     CircleSortIterator(): SortIterator() {};
     CircleSortIterator(Collection *c, std::string tag, std::string property);
+    TemplateVehicle * getNext() override;
+    bool hasMore() override;
+};
+class OneDirectionSortIterator : public SortIterator
+{
+protected:
+    virtual void getSorted() override;
+    Collection * collection;
+    unsigned long currentItem = -1;
+    unsigned long collectionSize;
+    std::vector<int> preSorted;
+public:
+    OneDirectionSortIterator(): SortIterator() {};
+    OneDirectionSortIterator(Collection *c, std::string tag, std::string property);
     TemplateVehicle * getNext() override;
     bool hasMore() override;
 };
