@@ -64,6 +64,41 @@ bool CircleVehicleIterator::hasMore() {
 }
 
 
+/** Конструктор цикличного итератора
+ * @brief OneDirectionIterator::CircleVehicleIterator
+ * @param c
+ * @param tag
+ * @param property
+ */
+OneDirectionIterator::OneDirectionIterator(Collection *c, std::string tag, std::string property) : VehicleIterator(c, tag, property) {
+    this->tag = tag;
+    this->property = property;
+    this->collection = c;
+    this->filteredItems = this->filterItems(this->collection, tag, property);
+}
+
+
+/** Цикличное получение элементов коллекции
+ * @brief OneDirectionIterator::getNext
+ * @return
+ */
+TemplateVehicle * OneDirectionIterator::getNext() {
+    if (this->hasMore()) {
+        currentItem += 1;
+        return collection->getItem(this->filteredItems[currentItem]);
+    }
+}
+
+
+/** проверка, есть ли ещё элементы в коллекции
+ * @brief OneDirectionIterator::hasMore
+ * @return
+ */
+bool OneDirectionIterator::hasMore() {
+    return currentItem+1 < filteredItems.size();
+}
+
+
 /** Конструктор цикличного итератора с сортировкой
  * @brief CircleSortIterator::CircleSortIterator
  * @param c
@@ -101,14 +136,62 @@ TemplateVehicle * CircleSortIterator::getNext() {
  * @return
  */
 bool CircleSortIterator::hasMore() {
+    this->getSorted();
     return this->currentItem < this->preSorted.size();
 }
 
 
-/** Проверка, нужна ли сортировка или нет
+/** Сортировка элементов
  * @brief CircleSortIterator::getSorted
  */
 void CircleSortIterator::getSorted() {
+    this->collectionSize = this->collection->getLength();
+    this->preSorted = this->sortingAlgorithm->sort(this->collection, this->filteredItems, this->property, this->reversed);
+}
+
+/** Конструктор однонаправленного итератора с сортировкой
+ * @brief OneDirectionSortIterator::CircleSortIterator
+ * @param c
+ * @param tag
+ * @param property
+ */
+OneDirectionSortIterator::OneDirectionSortIterator(Collection *c, std::string tag, std::string property) : SortIterator(c, tag, property) {
+    this->tag = tag;
+    this->property = property;
+    this->reversed = false;
+    this->collection = c;
+    this->collectionSize = 0;
+    this->filteredItems = this->filterItems(this->collection, tag, property);
+}
+
+
+/** Однонаправленное получение следующего элемента
+ * @brief OneDirectionSortIterator::getNext
+ * @return
+ */
+TemplateVehicle * OneDirectionSortIterator::getNext() {
+    this->getSorted();
+    if (this->hasMore()) {
+        currentItem += 1;
+        return collection->getItem(this->preSorted[currentItem]);
+    }
+}
+
+
+/** Проверка, еслть ли ещё элементы в коллекции
+ * @brief OneDirectionSortIterator::hasMore
+ * @return
+ */
+bool OneDirectionSortIterator::hasMore() {
+    this->getSorted();
+    return this->currentItem+1 < this->preSorted.size();
+}
+
+
+/** Сортировка элементов
+ * @brief OneDirectionSortIterator::getSorted
+ */
+void OneDirectionSortIterator::getSorted() {
     this->collectionSize = this->collection->getLength();
     this->preSorted = this->sortingAlgorithm->sort(this->collection, this->filteredItems, this->property, this->reversed);
 }
