@@ -75,8 +75,8 @@ CircleSortIterator::CircleSortIterator(Collection *c, std::string tag, std::stri
     this->property = property;
     this->reversed = false;
     this->collection = c;
+    this->collectionSize = 0;
     this->filteredItems = this->filterItems(this->collection, tag, property);
-    this->getSorted();
 }
 
 
@@ -88,10 +88,10 @@ TemplateVehicle * CircleSortIterator::getNext() {
     this->getSorted();
     currentItem += 1;
     if (this->hasMore()) {
-        return collection->getItem(this->filteredItems[currentItem]);
+        return collection->getItem(this->preSorted[currentItem]);
     } else {
         currentItem = 0;
-        return collection->getItem(this->filteredItems[currentItem]);
+        return collection->getItem(this->preSorted[currentItem]);
     }
 }
 
@@ -109,8 +109,6 @@ bool CircleSortIterator::hasMore() {
  * @brief CircleSortIterator::getSorted
  */
 void CircleSortIterator::getSorted() {
-    if (this->collection->getLength() != this->collectionSize) {
-        this->collectionSize = this->collection->getLength();
-        this->preSorted = this->sortingAlgorithm->sort(this->collection, this->filteredItems, this->property, this->reversed);
-    }
+    this->collectionSize = this->collection->getLength();
+    this->preSorted = this->sortingAlgorithm->sort(this->collection, this->filteredItems, this->property, this->reversed);
 }

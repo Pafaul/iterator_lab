@@ -6,28 +6,28 @@
 class SortingAlgorythm
 {
 public:
-    SortingAlgorythm();
+    SortingAlgorythm() {};
     virtual std::vector<int> sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) = 0;
 };
 
 class BubbleSort : public SortingAlgorythm
 {
 public:
-    BubbleSort();
+    BubbleSort() : SortingAlgorythm() {};
     virtual std::vector<int> sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) override;
 };
 
 class SelectionSort : public SortingAlgorythm
 {
 public:
-    SelectionSort();
+    SelectionSort() : SortingAlgorythm() {};
     virtual std::vector<int> sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) override;
 };
 
 class InsertionSort : public SortingAlgorythm
 {
 public:
-    InsertionSort();
+    InsertionSort() : SortingAlgorythm() {};
     virtual std::vector<int> sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) override;
 };
 

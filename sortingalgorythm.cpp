@@ -1,10 +1,5 @@
 #include "sortingalgorythm.h"
 
-SortingAlgorythm::SortingAlgorythm()
-{
-
-}
-
 /** Получение отсортированного вектора индексов элементов коллекции методом пузырька
  * @brief BubbleSort::sort
  * @param c
@@ -36,13 +31,13 @@ std::vector<int> BubbleSort::sort(Collection* c, std::vector<int> tagVehicles, s
  */
 std::vector<int> SelectionSort::sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) {
     if (tagVehicles.size() > 1) {
-        unsigned long i, j, minIndex;
+        int i, j, minIndex;
         for (i = 0; i < tagVehicles.size(); i++) {
             minIndex = i;
             for (j = i+1; j < tagVehicles.size(); j++)
-                if (c->getItem(j)->getProperty(property).getValue() < c->getItem(minIndex)->getProperty(property).getValue())
+                if (c->getItem(tagVehicles[j])->getProperty(property).getValue() < c->getItem(tagVehicles[minIndex])->getProperty(property).getValue())
                     minIndex = j;
-            std::swap(tagVehicles[minIndex], tagVehicles[j]);
+            std::swap(tagVehicles[minIndex], tagVehicles[i]);
         }
     }
     if (reverse) {
@@ -61,17 +56,18 @@ std::vector<int> SelectionSort::sort(Collection* c, std::vector<int> tagVehicles
  */
 std::vector<int> InsertionSort::sort(Collection* c, std::vector<int> tagVehicles, std::string property, bool reverse) {
     if (tagVehicles.size() > 1) {
-        unsigned long i, key, j;
+        int i, key, keyIndex, j;
         for (i = 1; i < tagVehicles.size(); i++)
         {
-            key = c->getItem(i)->getProperty(property).getValue();
+            key = c->getItem(tagVehicles[i])->getProperty(property).getValue();
+            keyIndex = tagVehicles[i];
             j = i - 1;
-            while(j >= 0 && c->getItem(j)->getProperty(property).getValue() > key)
+            while(j >= 0 && c->getItem(tagVehicles[j])->getProperty(property).getValue() > key)
             {
                 tagVehicles[j+1] = tagVehicles[j];
                 j = j - 1;
             }
-            tagVehicles[j+1] = key;
+            tagVehicles[j+1] = keyIndex;
         }
     }
     if (reverse) {

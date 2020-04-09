@@ -17,7 +17,9 @@ public:
     VehicleIterator(Collection * c, std::string tag, std::string property) {};
     virtual TemplateVehicle* getNext() = 0;
     virtual bool hasMore() = 0;
+    ~VehicleIterator() {};
 };
+
 
 class CircleVehicleIterator :  public VehicleIterator
 {
@@ -31,6 +33,7 @@ public:
     TemplateVehicle * getNext() override;
     bool hasMore() override;
 };
+
 
 class SortIterator : public VehicleIterator
 {
